@@ -48,7 +48,10 @@
   .nav-logo {
     display: flex; align-items: center;
   }
-  .nav-logo span { color: var(--warmDark); }
+  .nav-logo img {
+    height: 40px; 
+    object-fit: contain;
+  }
   .nav-links { display: flex; gap: 1.8rem; align-items: center; }
   .nav-links a {
     font-size: 0.82rem; font-weight: 400; letter-spacing: 0.06em;
@@ -203,7 +206,7 @@
     max-width: 1200px; margin: 0 auto;
   }
   .gallery-item {
-    overflow: hidden; border-radius: 3px; cursor: pointer;
+    overflow: hidden; border-radius: 3px;
     position: relative;
   }
   .gallery-item img {
@@ -227,7 +230,7 @@
   }
   .exp-card {
     position: relative; overflow: hidden; border-radius: 2px;
-    aspect-ratio: 3/4; cursor: pointer; background: #f0f0f0;
+    aspect-ratio: 3/4; background: #f0f0f0;
   }
   .exp-card img {
     width: 100%; height: 100%; object-fit: cover;
@@ -364,19 +367,6 @@
     opacity: 0.5; text-align: center;
   }
 
-  /* ============== LIGHTBOX ============== */
-  .lightbox {
-    position: fixed; inset: 0; background: rgba(0,0,0,0.95);
-    z-index: 1000; display: none; align-items: center; justify-content: center;
-    padding: 40px; cursor: zoom-out;
-  }
-  .lightbox.open { display: flex; }
-  .lightbox img { max-width: 100%; max-height: 100%; object-fit: contain; box-shadow: 0 0 50px rgba(0,0,0,0.5); }
-  .lightbox-close {
-    position: absolute; top: 30px; right: 40px; font-size: 2.5rem;
-    color: #fff; background: none; border: none; cursor: pointer;
-  }
-
   /* ============== MODAL (For Event/Inquiry) ============== */
   .modal {
     position: fixed; inset: 0; background: rgba(0,0,0,0.85);
@@ -410,10 +400,14 @@
     overflow: hidden;
     display: none; /* JS로 활성화 */
     flex-direction: column;
-    width: 320px;
   }
-  #popup-event { top: 100px; left: 5vw; }
-  #popup-inquiry { top: 100px; left: calc(5vw + 340px); }
+  /* 이벤트 팝업 4배(가로2배, 세로2배) 크기 조정 */
+  #popup-event { 
+    top: 100px; 
+    left: 5vw; 
+    width: 640px; 
+    max-width: 90vw; 
+  }
 
   .floating-popup-header {
     background: #222; padding: 10px 15px; color: #fff;
@@ -434,7 +428,9 @@
   }
   .floating-popup-footer {
     background: #f5f5f5; border-top: 1px solid #ddd;
-    padding: 8px 15px; text-align: right; font-size: 0.75rem; color: #555;
+    padding: 8px 15px; 
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 0.75rem; color: #555;
   }
   .floating-popup-footer span { cursor: pointer; }
 
@@ -452,21 +448,17 @@
     .floor-map-area { display: block; }
     .floor-shops-area, .floor-shops-only { width: 100%; }
 
-    /* 모바일 팝업 위치 조정 */
-    .floating-popup { width: 45%; top: 90px; }
-    #popup-event { left: 2.5%; }
-    #popup-inquiry { left: 52.5%; }
-  }
-  @media (max-width: 480px) {
-    .floating-popup { width: 90%; top: 90px; left: 5% !important; }
-    #popup-inquiry { top: calc(90px + 300px); } /* 화면이 작으면 위아래로 배치 */
+    /* 모바일 팝업 위치 및 크기 조정 */
+    #popup-event { top: 90px; left: 5vw; width: 90vw; }
   }
 </style>
 </head>
 <body>
 
 <nav>
-  <a href="#" class="nav-logo" style="font-family: var(--ssamzi); font-weight: 900; font-size: 1.5rem; letter-spacing: 0.1em; color: #222;">쌈지<span>길</span></a>
+  <a href="#" class="nav-logo">
+    <img src="images/logo_kr.png" alt="쌈지길 로고">
+  </a>
   <div class="nav-links">
     <a href="#about" data-ko="소개" data-en="About">소개</a>
     <a href="#shops" data-ko="매장안내" data-en="Floor Guide">매장안내</a>
@@ -493,23 +485,14 @@
     <p style="margin-top:10px; font-size:0.85rem; color:#666;" data-ko="자세히 보기" data-en="View Details">자세히 보기</p>
   </div>
   <div class="floating-popup-footer">
+    <label style="cursor: pointer; display: flex; align-items: center; gap: 5px;">
+      <input type="checkbox" id="hide-popup-checkbox">
+      <span data-ko="다시 보지 않기" data-en="Do not show again">다시 보지 않기</span>
+    </label>
     <span onclick="closePopup('popup-event')" data-ko="닫기" data-en="Close">닫기</span>
   </div>
 </div>
 
-<div class="floating-popup" id="popup-inquiry">
-  <div class="floating-popup-header">
-    <span data-ko="입점 문의" data-en="Inquiry">입점 문의</span>
-    <button class="popup-close-btn" onclick="closePopup('popup-inquiry')">×</button>
-  </div>
-  <div class="floating-popup-content" onclick="openModal('inquiry'); closePopup('popup-inquiry')">
-    <img src="add/입점문의1.png" alt="입점 문의">
-    <p style="margin-top:10px; font-size:0.85rem; color:#666;" data-ko="자세히 보기" data-en="View Details">자세히 보기</p>
-  </div>
-  <div class="floating-popup-footer">
-    <span onclick="closePopup('popup-inquiry')" data-ko="닫기" data-en="Close">닫기</span>
-  </div>
-</div>
 <section class="hero">
   <div class="hero-slider">
     <div class="hero-slide active">
@@ -781,11 +764,6 @@
   <p class="footer-copy">SSAMZIGIL — Where Art Meets Tradition in Insadong</p>
 </footer>
 
-<div class="lightbox" id="lightbox">
-  <button class="lightbox-close">×</button>
-  <img src="" alt="확대 이미지">
-</div>
-
 <div class="modal" id="modal-event">
   <div class="modal-content">
     <button class="modal-close" onclick="closeModal('event')">×</button>
@@ -871,18 +849,26 @@ dots.forEach(dot => {
 
 startSlider();
 
-// ============== Floating Popups on Page Load (수정된 부분) ==============
+// ============== Floating Popups on Page Load ==============
 window.addEventListener('load', function() {
   setTimeout(function() {
-    document.getElementById('popup-event').style.display = 'flex';
-    document.getElementById('popup-inquiry').style.display = 'flex';
-  }, 500); // 페이지 접속 0.5초 후 팝업 띄우기
+    // localStorage를 확인하여 'hideEventPopup' 값이 없을 때만 팝업을 띄움
+    if (!localStorage.getItem('hideEventPopup')) {
+      document.getElementById('popup-event').style.display = 'flex';
+    }
+  }, 500); 
 });
 
 function closePopup(id) {
+  // 다시 보지 않기 체크 여부 확인
+  if (id === 'popup-event') {
+    const checkbox = document.getElementById('hide-popup-checkbox');
+    if (checkbox && checkbox.checked) {
+      localStorage.setItem('hideEventPopup', 'true'); // 로컬 스토리지에 저장
+    }
+  }
   document.getElementById(id).style.display = 'none';
 }
-// =======================================================================
 
 // ============== Floor Tabs ==============
 const floorTabs = document.querySelectorAll('.floor-tab');
@@ -898,29 +884,6 @@ floorTabs.forEach(tab => {
   });
 });
 
-// ============== Lightbox ==============
-const lightbox = document.getElementById('lightbox');
-const lightboxImg = lightbox.querySelector('img');
-
-function initLightbox() {
-  document.querySelectorAll('.gallery-item img, .floor-map-area img, .floor-shops-area img, .floor-shops-only img, .modal-body img').forEach(img => {
-    img.style.cursor = 'pointer';
-    img.addEventListener('click', () => {
-      lightboxImg.src = img.src;
-      lightbox.classList.add('open');
-      document.body.style.overflow = 'hidden';
-    });
-  });
-}
-initLightbox();
-
-lightbox.addEventListener('click', (e) => {
-  if (e.target === lightbox || e.target.classList.contains('lightbox-close')) {
-    lightbox.classList.remove('open');
-    document.body.style.overflow = '';
-  }
-});
-
 // ============== Modals ==============
 function openModal(type) {
   document.getElementById('modal-' + type).classList.add('open');
@@ -933,7 +896,6 @@ function closeModal(type) {
 
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
-    lightbox.classList.remove('open');
     document.querySelectorAll('.modal').forEach(m => m.classList.remove('open'));
     document.body.style.overflow = '';
   }
