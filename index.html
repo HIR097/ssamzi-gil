@@ -401,11 +401,11 @@
     display: none; /* JS로 활성화 */
     flex-direction: column;
   }
-  /* 이벤트 팝업 4배(가로2배, 세로2배) 크기 조정 */
+  /* 이벤트 팝업 크기 조정: 기존 너비의 2/3인 427px로 수정 */
   #popup-event { 
     top: 100px; 
     left: 5vw; 
-    width: 640px; 
+    width: 427px; /* 640px의 2/3 (426.67px) */
     max-width: 90vw; 
   }
 
@@ -508,7 +508,7 @@
   <div class="hero-overlay"></div>
   <div class="hero-content">
     <div class="hero-logo-wrapper">
-      <h1>쌈지길</h1>
+      <h1 data-ko="쌈지길" data-en="Ssamzigil">쌈지길</h1>
     </div>
     <h2 class="hero-subtitle" data-ko="인사동의 <em>예술이 흐르는 길</em>" data-en="A Path Where <em>Art Flows</em> in Insadong">인사동의 <em>예술이 흐르는 길</em></h2>
     <p class="hero-tagline" data-ko="길을 통해 정겹게 만나는 곳, 인사동 안의 또 다른 인사동" data-en="A warm encounter through the path — another Insadong within Insadong">길을 통해 정겹게 만나는 곳, 인사동 안의 또 다른 인사동</p>
