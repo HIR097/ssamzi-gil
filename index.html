@@ -48,10 +48,7 @@
   .nav-logo {
     display: flex; align-items: center;
   }
-  .nav-logo img {
-    height: 40px; 
-    object-fit: contain;
-  }
+  .nav-logo span { color: var(--warmDark); }
   .nav-links { display: flex; gap: 1.8rem; align-items: center; }
   .nav-links a {
     font-size: 0.82rem; font-weight: 400; letter-spacing: 0.06em;
@@ -206,7 +203,7 @@
     max-width: 1200px; margin: 0 auto;
   }
   .gallery-item {
-    overflow: hidden; border-radius: 3px;
+    overflow: hidden; border-radius: 3px; cursor: pointer;
     position: relative;
   }
   .gallery-item img {
@@ -230,12 +227,12 @@
   }
   .exp-card {
     position: relative; overflow: hidden; border-radius: 2px;
-    aspect-ratio: 3/4; background: #f0f0f0;
+    aspect-ratio: 3/4; cursor: pointer; background: #f0f0f0;
   }
   .exp-card img {
     width: 100%; height: 100%; object-fit: cover;
     transition: transform 0.8s ease, filter 0.8s ease;
-    filter: brightness(0.7);
+    filter: brightness(0.85);
   }
   .exp-card:hover img { transform: scale(1.08); filter: brightness(0.4); }
   .exp-card-content {
@@ -323,6 +320,11 @@
     box-shadow: 0 10px 40px rgba(0,0,0,0.05);
   }
 
+  @media (max-width: 768px) {
+    .floor-map-area { display: none; }
+    .floor-shops-area, .floor-shops-only { width: 100%; }
+  }
+
   @keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
@@ -367,6 +369,19 @@
     opacity: 0.5; text-align: center;
   }
 
+  /* ============== LIGHTBOX ============== */
+  .lightbox {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.95);
+    z-index: 1000; display: none; align-items: center; justify-content: center;
+    padding: 40px; cursor: zoom-out;
+  }
+  .lightbox.open { display: flex; }
+  .lightbox img { max-width: 100%; max-height: 100%; object-fit: contain; box-shadow: 0 0 50px rgba(0,0,0,0.5); }
+  .lightbox-close {
+    position: absolute; top: 30px; right: 40px; font-size: 2.5rem;
+    color: #fff; background: none; border: none; cursor: pointer;
+  }
+
   /* ============== MODAL (For Event/Inquiry) ============== */
   .modal {
     position: fixed; inset: 0; background: rgba(0,0,0,0.85);
@@ -390,50 +405,6 @@
   .inquiry-images { display: flex; gap: 1rem; }
   .inquiry-images img { flex: 1; width: 50%; }
 
-  /* ============== FLOATING POPUP (들어가자마자 뜨는 팝업) ============== */
-  .floating-popup {
-    position: fixed;
-    z-index: 2000;
-    background: #ffffff;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.3);
-    border-radius: 8px;
-    overflow: hidden;
-    display: none; /* JS로 활성화 */
-    flex-direction: column;
-  }
-  /* 이벤트 팝업 크기 조정: 기존 너비의 2/3인 427px로 수정 */
-  #popup-event { 
-    top: 100px; 
-    left: 5vw; 
-    width: 427px; /* 640px의 2/3 (426.67px) */
-    max-width: 90vw; 
-  }
-
-  .floating-popup-header {
-    background: #222; padding: 10px 15px; color: #fff;
-    font-size: 0.9rem; font-weight: 500; font-family: var(--ssamzi);
-    display: flex; justify-content: space-between; align-items: center;
-  }
-  .popup-close-btn {
-    background: none; border: none; color: #fff; font-size: 1.2rem; cursor: pointer;
-  }
-  .floating-popup-content {
-    padding: 15px; cursor: pointer; background: #fff; text-align: center;
-  }
-  .floating-popup-content img {
-    width: 100%; height: auto; border-radius: 4px; transition: transform 0.3s;
-  }
-  .floating-popup-content:hover img {
-    transform: scale(1.03);
-  }
-  .floating-popup-footer {
-    background: #f5f5f5; border-top: 1px solid #ddd;
-    padding: 8px 15px; 
-    display: flex; justify-content: space-between; align-items: center;
-    font-size: 0.75rem; color: #555;
-  }
-  .floating-popup-footer span { cursor: pointer; }
-
   @media (max-width: 1024px) {
     .about-grid { grid-template-columns: 1fr; gap: 3rem; }
     .visit-grid { grid-template-columns: 1fr; }
@@ -445,20 +416,13 @@
       padding: 2rem; border-bottom: 1px solid rgba(0,0,0,0.1);
     }
     .nav-hamburger { display: flex; }
-    .floor-map-area { display: block; }
-    .floor-shops-area, .floor-shops-only { width: 100%; }
-
-    /* 모바일 팝업 위치 및 크기 조정 */
-    #popup-event { top: 90px; left: 5vw; width: 90vw; }
   }
 </style>
 </head>
 <body>
 
 <nav>
-  <a href="#" class="nav-logo">
-    <img src="images/logo_kr.png" alt="쌈지길 로고">
-  </a>
+  <a href="#" class="nav-logo" style="font-family: var(--ssamzi); font-weight: 900; font-size: 1.5rem; letter-spacing: 0.1em; color: #222;">쌈지<span>길</span></a>
   <div class="nav-links">
     <a href="#about" data-ko="소개" data-en="About">소개</a>
     <a href="#shops" data-ko="매장안내" data-en="Floor Guide">매장안내</a>
@@ -475,24 +439,7 @@
   </button>
 </nav>
 
-<div class="floating-popup" id="popup-event">
-  <div class="floating-popup-header">
-    <span data-ko="이벤트 안내" data-en="Event Notice">이벤트 안내</span>
-    <button class="popup-close-btn" onclick="closePopup('popup-event')">×</button>
-  </div>
-  <div class="floating-popup-content" onclick="openModal('event'); closePopup('popup-event')">
-    <img src="add/느루깨비.png" alt="이벤트 안내">
-    <p style="margin-top:10px; font-size:0.85rem; color:#666;" data-ko="자세히 보기" data-en="View Details">자세히 보기</p>
-  </div>
-  <div class="floating-popup-footer">
-    <label style="cursor: pointer; display: flex; align-items: center; gap: 5px;">
-      <input type="checkbox" id="hide-popup-checkbox">
-      <span data-ko="다시 보지 않기" data-en="Do not show again">다시 보지 않기</span>
-    </label>
-    <span onclick="closePopup('popup-event')" data-ko="닫기" data-en="Close">닫기</span>
-  </div>
-</div>
-
+<!-- ============== HERO SECTION ============== -->
 <section class="hero">
   <div class="hero-slider">
     <div class="hero-slide active">
@@ -508,7 +455,7 @@
   <div class="hero-overlay"></div>
   <div class="hero-content">
     <div class="hero-logo-wrapper">
-      <h1 data-ko="쌈지길" data-en="Ssamzigil">쌈지길</h1>
+      <h1>쌈지길</h1>
     </div>
     <h2 class="hero-subtitle" data-ko="인사동의 <em>예술이 흐르는 길</em>" data-en="A Path Where <em>Art Flows</em> in Insadong">인사동의 <em>예술이 흐르는 길</em></h2>
     <p class="hero-tagline" data-ko="길을 통해 정겹게 만나는 곳, 인사동 안의 또 다른 인사동" data-en="A warm encounter through the path — another Insadong within Insadong">길을 통해 정겹게 만나는 곳, 인사동 안의 또 다른 인사동</p>
@@ -520,6 +467,7 @@
   </div>
 </section>
 
+<!-- ============== ABOUT SECTION ============== -->
 <section class="about" id="about">
   <div class="about-grid">
     <div class="about-visual">
@@ -561,6 +509,7 @@
   </div>
 </section>
 
+<!-- ============== PHOTO GALLERY ============== -->
 <section class="gallery">
   <div class="gallery-header">
     <p class="section-label">Gallery</p>
@@ -588,6 +537,7 @@
   </div>
 </section>
 
+<!-- ============== EXPERIENCE SECTION ============== -->
 <section class="experience" id="experience">
   <div class="exp-header">
     <p class="section-label">Experience</p>
@@ -622,6 +572,7 @@
   </div>
 </section>
 
+<!-- ============== SHOPS / FLOOR GUIDE ============== -->
 <section class="shops" id="shops">
   <div class="shops-header">
     <p class="section-label" style="color:var(--warmDark)">Floor Guide</p>
@@ -640,6 +591,7 @@
   </div>
 
   <div class="floor-content">
+    <!-- 1층 -->
     <div class="floor-panel active" id="floor-f1">
       <div class="floor-layout">
         <div class="floor-map-area">
@@ -653,6 +605,7 @@
       </div>
     </div>
 
+    <!-- 2층 -->
     <div class="floor-panel" id="floor-f2">
       <div class="floor-layout">
         <div class="floor-map-area">
@@ -666,6 +619,7 @@
       </div>
     </div>
 
+    <!-- 3층 -->
     <div class="floor-panel" id="floor-f3">
       <div class="floor-layout">
         <div class="floor-map-area">
@@ -679,6 +633,7 @@
       </div>
     </div>
 
+    <!-- 4층 -->
     <div class="floor-panel" id="floor-f4">
       <div class="floor-layout">
         <div class="floor-map-area">
@@ -691,6 +646,7 @@
       </div>
     </div>
 
+    <!-- B1층 -->
     <div class="floor-panel" id="floor-b1">
       <div class="floor-layout">
         <div class="floor-map-area">
@@ -703,6 +659,7 @@
       </div>
     </div>
 
+    <!-- B2층 -->
     <div class="floor-panel" id="floor-b2">
       <div class="floor-layout">
         <div class="floor-map-area">
@@ -715,6 +672,7 @@
       </div>
     </div>
 
+    <!-- 별관 (Annex) -->
     <div class="floor-panel" id="floor-annex">
       <div class="floor-shops-only">
         <img src="images/shops/B1층, B2층, 별관 가게소개_최종본-03.png" alt="별관 매장 소개" loading="lazy">
@@ -723,6 +681,7 @@
   </div>
 </section>
 
+<!-- ============== VISIT SECTION ============== -->
 <section class="visit" id="visit">
   <div class="visit-grid">
     <div class="visit-map">
@@ -754,7 +713,7 @@
     <div>
       <p class="footer-addr">
         서울특별시 종로구 인사동길 44<br>
-        © SSAMZIGIL. All rights reserved.
+        &copy; SSAMZIGIL. All rights reserved.
       </p>
     </div>
     <div class="footer-links">
@@ -764,9 +723,16 @@
   <p class="footer-copy">SSAMZIGIL — Where Art Meets Tradition in Insadong</p>
 </footer>
 
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close">&times;</button>
+  <img src="" alt="확대 이미지">
+</div>
+
+<!-- Modals -->
 <div class="modal" id="modal-event">
   <div class="modal-content">
-    <button class="modal-close" onclick="closeModal('event')">×</button>
+    <button class="modal-close" onclick="closeModal('event')">&times;</button>
     <h2 class="modal-title" data-ko="이벤트" data-en="Event">이벤트</h2>
     <div class="modal-body">
       <p style="text-align:center; margin-bottom:1.5rem; font-weight:700;">4월 계단갤러리: 느루깨비</p>
@@ -777,7 +743,7 @@
 
 <div class="modal" id="modal-inquiry">
   <div class="modal-content">
-    <button class="modal-close" onclick="closeModal('inquiry')">×</button>
+    <button class="modal-close" onclick="closeModal('inquiry')">&times;</button>
     <h2 class="modal-title" data-ko="입점문의" data-en="Inquiry">입점문의</h2>
     <div class="modal-body">
       <div class="inquiry-images">
@@ -849,26 +815,12 @@ dots.forEach(dot => {
 
 startSlider();
 
-// ============== Floating Popups on Page Load ==============
+// ============== Auto-open Event Modal on Page Load ==============
 window.addEventListener('load', function() {
   setTimeout(function() {
-    // localStorage를 확인하여 'hideEventPopup' 값이 없을 때만 팝업을 띄움
-    if (!localStorage.getItem('hideEventPopup')) {
-      document.getElementById('popup-event').style.display = 'flex';
-    }
-  }, 500); 
+    openModal('event');
+  }, 500);
 });
-
-function closePopup(id) {
-  // 다시 보지 않기 체크 여부 확인
-  if (id === 'popup-event') {
-    const checkbox = document.getElementById('hide-popup-checkbox');
-    if (checkbox && checkbox.checked) {
-      localStorage.setItem('hideEventPopup', 'true'); // 로컬 스토리지에 저장
-    }
-  }
-  document.getElementById(id).style.display = 'none';
-}
 
 // ============== Floor Tabs ==============
 const floorTabs = document.querySelectorAll('.floor-tab');
@@ -884,6 +836,29 @@ floorTabs.forEach(tab => {
   });
 });
 
+// ============== Lightbox ==============
+const lightbox = document.getElementById('lightbox');
+const lightboxImg = lightbox.querySelector('img');
+
+function initLightbox() {
+  document.querySelectorAll('.gallery-item img, .floor-map-area img, .floor-shops-area img, .floor-shops-only img, .modal-body img').forEach(img => {
+    img.style.cursor = 'pointer';
+    img.addEventListener('click', () => {
+      lightboxImg.src = img.src;
+      lightbox.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    });
+  });
+}
+initLightbox();
+
+lightbox.addEventListener('click', (e) => {
+  if (e.target === lightbox || e.target.classList.contains('lightbox-close')) {
+    lightbox.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+});
+
 // ============== Modals ==============
 function openModal(type) {
   document.getElementById('modal-' + type).classList.add('open');
@@ -896,6 +871,7 @@ function closeModal(type) {
 
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
+    lightbox.classList.remove('open');
     document.querySelectorAll('.modal').forEach(m => m.classList.remove('open'));
     document.body.style.overflow = '';
   }
