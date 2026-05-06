@@ -47,6 +47,13 @@
   }
   .nav-logo {
     display: flex; align-items: center;
+    height: 100%;
+  }
+  .nav-logo img {
+    height: 40px;
+    width: auto;
+    display: block;
+    object-fit: contain;
   }
   .nav-logo span { color: var(--warmDark); }
   .nav-links { display: flex; gap: 1.8rem; align-items: center; }
@@ -259,6 +266,7 @@
 
   /* Mobile: image on top, text below */
   @media (max-width: 768px) {
+    .nav-logo img { height: 32px; }
     .exp-cards {
       grid-template-columns: 1fr;
       gap: 2rem;
@@ -456,7 +464,9 @@
 <body>
 
 <nav>
-  <a href="#" class="nav-logo" style="font-family: var(--ssamzi); font-weight: 900; font-size: 1.5rem; letter-spacing: 0.1em; color: #222;">쌈지<span>길</span></a>
+  <a href="#" class="nav-logo">
+    <img src="images/logo_kr.png" alt="쌈지길">
+  </a>
   <div class="nav-links">
     <a href="#about" data-ko="소개" data-en="About">소개</a>
     <a href="#shops" data-ko="매장안내" data-en="Floor Guide">매장안내</a>
